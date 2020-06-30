@@ -19,7 +19,7 @@ spec:
       containers:
       - name: {{ include "smilr.name" . }}-data-api
  
-        image: "{{ .Values.registryPrefix }}smilr/data-api:{{ .Values.dataApi.imageTag }}"
+        image: "{{ .Values.repository }}smilr/data-api:{{ .Values.dataApi.imageTag }}"
         imagePullPolicy: {{ .Values.dataApi.imagePullPolicy }}
 
         ports:

@@ -12,18 +12,18 @@ metadata:
   labels:
     scenario: 1b
   annotations:
-    kubernetes.io/ingress.class: addon-http-application-routing
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
   tls:
   - hosts:
     # Change FQDN host as required to match your config
-    - smilr.{{CHANGEME}.{{CHANGEME}}.aksapp.io
+    - smilr.kainiindustries.net
     secretName: smilr-cert-staging
   rules:
     # !!! Change host as required to match your DNS configuration
-  - host: smilr.{{CHANGEME}.{{CHANGEME}}.aksapp.io
+  - host: smilr.kainiindustries.net
     http:
       paths:
       - path: /api

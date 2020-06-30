@@ -19,7 +19,7 @@ spec:
       containers:
       - name: {{ include "smilr.name" . }}
 
-        image: "{{ .Values.registryPrefix }}smilr/frontend:{{ .Values.frontend.imageTag }}"
+        image: "{{ .Values.repository }}smilr/frontend:{{ .Values.frontend.imageTag }}"
         imagePullPolicy: {{ .Values.frontend.imagePullPolicy }}
 
         ports:

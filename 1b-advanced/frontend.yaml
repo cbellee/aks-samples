@@ -26,7 +26,7 @@ spec:
       - name: frontend-pods
 
         # !CHANGE THIS! To your real image reference for the frontend 
-        image: smilr/frontend:stable
+        image: smilr/frontend:latest
         imagePullPolicy: Always
 
         ports:

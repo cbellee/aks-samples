@@ -3,14 +3,14 @@
 #
 
 # Change to blank string to pull from prebuilt images on Docker Hub
-registryPrefix: changeme.azurecr.io/
+repository:
 
 ingress:
   # If blank then path based routing will be used, and ingress IP can be used
   # If set then release name will be prepended and host routing used 
-  domainSuffix: 
+  domainSuffix: kainiindustries.net
   # Ingress class annotation
-  class: addon-http-application-routing
+  class: nginx
   # Set to enable TLS, when using cert-manager and dynamically issued certs 
   certIssuer:
   # Set to enable TLS with a static secret
