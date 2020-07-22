@@ -1,0 +1,256 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry and imagePullSecrets
+##
+# global:
+#   imageRegistry: myRegistryName
+#   imagePullSecrets:
+#     - myRegistryKeySecretName
+
+## Bitnami external-dns image version
+## ref: https://hub.docker.com/r/bitnami/external-dns/tags/
+##
+provider: azure
+image:
+  registry: docker.io
+  repository: bitnami/external-dns
+  tag: 0.7.0-debian-10-r0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistryKeySecretName
+
+## String to partially override external-dns.fullname template (will maintain the release name)
+# nameOverride:
+
+## String to fully override external-dns.fullname template
+# fullnameOverride:
+
+## K8s resources type to be observed for new DNS entries by ExternalDNS
+##
+sources:
+- service
+- ingress
+# - crd
+azure:
+  ## When a secret to load azure.json is not specified,
+  ## the host's /etc/kubernetes/azure.json will be used
+  ##
+  ## Azure Cloud to use
+  ##
+  cloud: ""
+  ## Azure resource group to use
+  ##
+  resourceGroup: "external-dns-zones-rg"
+  ## Azure tenant ID to use
+  ##
+  tenantId: "3d49be6f-6e38-404b-bbd4-f61c1a2d25bf"
+  ## Azure subscription ID to use
+  ##
+  subscriptionId: "b2375b5f-8dab-4436-b87c-32bc7fdce5d0"
+  ## Azure Application Client ID to use
+  ##
+  aadClientId: ""
+  ## Azure Application Client Secret to use
+  ##
+  aadClientSecret: ""
+  ## If you use Azure MSI, this should be set to true
+  ##
+  useManagedIdentityExtension: true
+  podLabels:
+  aadpodidbinding: external-dns
+
+## Extra Arguments to passed to external-dns
+##
+extraArgs: {}
+## Extra env. variable to set on external-dns container.
+##
+## extraEnv:
+## - name: VARNAME1
+##   value: value1
+## - name: VARNAME2
+##   valueFrom:
+##     secretKeyRef:
+##       name: existing-secret
+##       key: varname2-key
+extraEnv: []
+
+## Replica count
+##
+replicas: 1
+
+## Affinity for pod assignment (this value is evaluated as a template)
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+## Node labels for pod assignment (this value is evaluated as a template)
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+## Tolerations for pod assignment (this value is evaluated as a template)
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+##
+tolerations: []
+## Annotations for external-dns pods
+##
+podAnnotations: {}
+## Additional labels for the pod(s).
+##
+podLabels: {}
+## Pod priority class name
+##
+priorityClassName: ""
+
+## Options for the source type "crd"
+##
+crd:
+  ## Install and use the integrated DNSEndpoint CRD
+  create: false
+  ## Change these to use an external DNSEndpoint CRD (E.g. from kubefed)
+  apiversion: ""
+  kind: ""
+
+## Kubernetes svc configutarion
+##
+service:
+  ## Kubernetes svc type
+  ##
+  type: ClusterIP
+  port: 7979
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types for the client port
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+  ## Static clusterIP or None for headless services
+  ##
+  # clusterIP: ""
+  ## External IP list to use with ClusterIP service type
+  ##
+  externalIPs: []
+  ## Use loadBalancerIP to request a specific static IP,
+  ## otherwise leave blank
+  ##
+  # loadBalancerIP:
+  ## Address that are allowed when svc is LoadBalancer
+  ##
+  loadBalancerSourceRanges: []
+  ## Provide any additional annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+
+## RBAC parameteres
+## https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+##
+rbac:
+  create: true
+  ## Service Account for pods
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccountName: default
+  ## Annotations for the Service Account
+  ##
+  serviceAccountAnnotations: {}
+  ## RBAC API version
+  ##
+  apiVersion: v1beta1
+  ## Podsecuritypolicy
+  ##
+  pspEnabled: false
+
+## Kubernetes Security Context
+## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securityContext: {}
+  # allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: true
+  # capabilities:
+  #   drop: ["ALL"]
+podSecurityContext:
+  fsGroup: 1001
+  runAsUser: 1001
+  # runAsNonRoot: true
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+#  limits:
+#    cpu: 50m
+#    memory: 50Mi
+#  requests:
+#    memory: 50Mi
+#    cpu: 10m
+
+## Liveness Probe. The block is directly forwarded into the deployment, so you can use whatever livenessProbe configuration you want.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 2
+  successThreshold: 1
+## Readiness Probe. The block is directly forwarded into the deployment, so you can use whatever readinessProbe configuration you want.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+## Configure extra volumes
+extraVolumes: []
+
+## Configure extra volumeMounts
+extraVolumeMounts: []
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: false
+  ## Metrics exporter pod Annotation and Labels
+  ##
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "7979"
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: false
+    ## Namespace in which Prometheus is running
+    ##
+    # namespace: monitoring
+
+    ## Interval at which metrics should be scraped.
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # interval: 10s
+
+    ## Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    # scrapeTimeout: 10s
+
+    ## ServiceMonitor selector labels
+    ## ref: https://github.com/bitnami/charts/tree/master/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    # selector:
+    #   prometheus: my-prometheus

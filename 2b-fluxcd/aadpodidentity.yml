@@ -1,0 +1,19 @@
+# Please see https://github.com/Azure/aad-pod-identity for more information
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: external-dns
+spec:
+  type: 0
+  ResourceID: /subscriptions/b2375b5f-8dab-4436-b87c-32bc7fdce5d0/resourceGroups/external-dns-zones-rg/providers/Microsoft.Network/dnszones/kainiindustries.net
+  ClientID: f3dcc65d-9a50-445d-bca0-7016ab3e155c
+
+---
+
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: external-dns
+spec:
+  AzureIdentity: external-dns
+  Selector: external-dns

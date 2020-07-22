@@ -36,7 +36,7 @@ kubectl get all -l scenario=1b
 
 # ../common/get-url.sh $1
 
-# set the Azure DNS A reocrd for 'smilr.kainiindustries.net' to the current NGINX external LB IP
+# set the Azure DNS A record for 'smilr.kainiindustries.net' to the current NGINX external LB IP
 INGRESS_IP=$(kubectl get services --namespace default nginx-ingress-controller --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
 CURRENT_IP=$(az network dns record-set a show -g external-dns-zones-rg --zone-name kainiindustries.net --name smilr --query arecords[0].ipv4Address -otsv)
 az network dns record-set a add-record --resource-group external-dns-zones-rg --zone-name kainiindustries.net --record-set-name "smilr" --ipv4-address $INGRESS_IP
